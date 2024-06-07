@@ -1,0 +1,24 @@
+# Importing required libraries
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+crimes = pd.read_csv("crimes.csv", parse_dates=["Date Rptd", "DATE OCC"], dtype={"TIME OCC": str})
+crimes.head()
+
+# Which hour has the highest frequency of crimes? 
+max_hour_dt = crimes["TIME OCC"].value_counts().index[0]
+peak_crime_hour = int(int(max_hour_dt)/100)
+print(peak_crime_hour)
+
+# Which area has the largest frequency of night crimes (crimes committed between 10pm and 3:59am)?
+night_hours = crimes[(crimes["TIME OCC"].astype(int) >= 2200) | (crimes["TIME OCC"].astype(int) <= 359)]
+peak_night_crime_location = night_hours["AREA NAME"].value_counts().index[0]
+print(peak_night_crime_location)
+
+# Identify the number of crimes committed against victims of different age groups. 
+labels = ["0-17", "18-25", "26-34", "35-44", "45-54", "55-64", "65+"] 
+bins = [ 0, 17, 25, 34, 44, 54, 64, 99 ]
+crimes["Vict Age Cat"] = pd.cut(crimes["Vict Age"], labels=labels, bins=bins)
+victim_ages = crimes["Vict Age Cat"].value_counts()
+print(victim_ages)
